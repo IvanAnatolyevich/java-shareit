@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface ItemRepository {
     List<Item> getUserItems(long userId);
 
-    Optional<Item> getItemById(long itemId);
+    Item findById(long itemId);
 
     Item addNewItem(long userId, Item item);
 

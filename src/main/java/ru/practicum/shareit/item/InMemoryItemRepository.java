@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.User;
 
 import java.util.*;
 
@@ -30,8 +31,13 @@ public class InMemoryItemRepository implements ItemRepository {
     }
 
     @Override
-    public Optional<Item> getItemById(long itemId) {
-        return Optional.ofNullable(items.get(itemId));
+    public Item findById(long itemId) {
+        Item item = items.get(itemId);
+        if (item == null) {
+            log.warn("Пользователь с id: {} не найден!", itemId);
+            throw new NotFoundException("Пользователь с id: " + itemId + "не найден!");
+        }
+        return item;
     }
 
     @Override

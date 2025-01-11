@@ -6,6 +6,7 @@ import org.springframework.validation.annotation.Validated;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserRepository;
 
 import java.util.Collections;
@@ -34,9 +35,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto getItemById(long itemId) {
-        Item item = itemRepository.getItemById(itemId)
-                .orElseThrow(() -> new NotFoundException("Вещь с id: " + itemId + " не найдена!"));
-        return ItemMapper.toItemDto(item);
+        return ItemMapper.toItemDto(itemRepository.findById(itemId));
+//        return ItemMapper.toItemDto(item);
     }
 
     @Override
@@ -56,9 +56,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto updateItem(long userId, long itemId, ItemDto itemDto) {
         validateUserExists(userId);
-        Item existingItem = itemRepository.getItemById(itemId)
-                .orElseThrow(() -> new NotFoundException("Вещь с id: " + itemId + " не найдена!"));
-
+        Item existingItem = itemRepository.findById(itemId);
         if (existingItem.getOwnerId() != userId) {
             throw new NotFoundException("Вещь не принадлежит пользователю.");
         }
