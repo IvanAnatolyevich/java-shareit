@@ -1,20 +1,46 @@
 package ru.practicum.shareit.item.model;
 
-import lombok.Builder;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.JoinColumn;
 import lombok.Getter;
 import lombok.Setter;
+import ru.practicum.shareit.request.model.ItemRequest;
 
-@Setter
+@Entity
+@Table(name = "ITEMS", schema = "public")
 @Getter
-@Builder
+@Setter
 public class Item {
-    private long id;
-    private long ownerId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(name = "NAME")
     private String name;
+    @Column(name = "DESCRIPTION")
     private String description;
+    @Column(name = "IS_AVAILABLE")
     private Boolean available;
-    private long requestId;
+    @Column(name = "OWNER_ID")
+    private Long owner;
+    @OneToOne
+    @JoinColumn(name = "REQUEST_ID")
+    private ItemRequest request;
 
+    @Override
+    public String toString() {
+        return "Item{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", available=" + available +
+                ", owner=" + owner +
+                ", request=" + request +
+                '}';
+    }
 }
-
-
