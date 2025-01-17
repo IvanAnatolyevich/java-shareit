@@ -1,51 +1,56 @@
 package ru.practicum.shareit.user;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.user.dto.UserDto;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
+import ru.practicum.shareit.user.dto.UserInputDto;
+import ru.practicum.shareit.user.dto.UserOutputDto;
 
 import java.util.List;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "Users", description = "Управление пользователями")
-@RequestMapping(path = "/users")
+@RequestMapping("/users")
 public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public List<UserDto> getAllUsers() {
-        log.info("Получен запрс на вывод всех пользователей");
-        return userService.getAll();
+    public List<UserOutputDto> findAllUsers() {
+        log.info("Поступил запрос на получение всех пользователей.");
+        return userService.findAll();
     }
 
-    @GetMapping("/{userId}")
-    public UserDto getUser(@PathVariable long userId) {
-        log.info("Получен запрос на вывод пользователя с id: {}", userId);
-        return userService.getUserById(userId);
-    }
-
-    @DeleteMapping("/{userId}")
-    public void deleteUser(@PathVariable long userId) {
-        log.info("Получен запрос на удаление пользователя с id: {}", userId);
-        userService.deleteById(userId);
+    @GetMapping("/{id}")
+    public UserOutputDto findUserById(@PathVariable Long id) {
+        log.info("Поступил запрос на получение пользователя с id = {}.",  id);
+        return userService.findById(id);
     }
 
     @PostMapping
-    public UserDto createUser(@Valid @RequestBody UserDto userDto) {
-        log.info("Получен запрос на добавление пользователя: {}", userDto);
-        return userService.createUser(userDto);
+    public UserOutputDto saveUser(@Valid @RequestBody UserInputDto userInputDto) {
+        log.info("Поступил запрос на создание пользователя. Body = {}.", userInputDto);
+        return userService.save(userInputDto);
     }
 
-    @PatchMapping("/{userId}")
-    public UserDto updateUser(@PathVariable Long userId, @RequestBody UserDto userDto) {
-        log.info("Получен запрос на частичное обновление пользователя {}", userDto);
-        userDto.setId(userId);
-        return userService.updateUser(userDto);
+    @PatchMapping("/{id}")
+    public UserOutputDto updateUser(@PathVariable Long id,
+                                    @RequestBody UserInputDto userInputDto) {
+        log.info("Поступил запрос на обновление пользователя с id = {}. Body = {}", id, userInputDto);
+        return userService.update(id, userInputDto);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteById(@PathVariable Long id) {
+        log.info("Поступил запрос на удаление пользователя с id = {}", id);
+        userService.deleteById(id);
     }
 }
-
